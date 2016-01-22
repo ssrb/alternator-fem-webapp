@@ -10,5 +10,7 @@ before_install:
 before_script:
 - npm install -g gulp
 - npm install -g uglifyjs
-script: gulp
+script: 
+- gulp
+- bash deploy
 
