@@ -1,10 +1,19 @@
 {
   "name": "alternator",
   "version": "1.0.0",
-  "description": "",
-  "main": "alternator.js",
+  "description": "FE analysis of an alternator in your web browser",
+  "main": "bundle.js",
   "dependencies": {
-    "typescript-collections": "^1.0.5"
+    "browserify": "^13.0.0",
+    "browserify-shader": "^0.1.2",
+    "gulp": "^3.9.0",
+    "gulp-tsd": "^0.1.0",
+    "tsify": "^0.13.2",
+    "typescript": "^1.7.5",
+    "typescript-collections": "^1.0.5",
+    "uglifyify": "^3.0.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
   },
   "devDependencies": {},
   "scripts": {
