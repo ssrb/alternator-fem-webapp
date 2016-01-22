@@ -30,6 +30,7 @@
 ///<reference path="node_modules/typescript-collections/collections.d.ts"/>
 
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
+require('./node_modules/typescript-collections/collections.js');
 
 import msh = require('./mesh');
 import Mesh = msh.Mesh;
