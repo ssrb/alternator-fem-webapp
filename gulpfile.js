@@ -6,22 +6,26 @@ var browserifyShader = require("browserify-shader")
 var tsify = require('tsify');
 var uglify = require('uglifyify');
 var tsd = require('gulp-tsd');
+var runSequence = require('run-sequence');
 
 gulp.task('.bower.install', function () {
     var bower = require('gulp-bower');
     return bower();
 });
  
-gulp.task('.tsd.install', function () {
-    return gulp.src('./tsd.json').pipe(tsd());
-});
-
-gulp.task('.clean.bower.lib', function (cb) {
+gulp.task('.bower.clean', function (cb) {
     var del = require('del');
     del(['lib/'], cb);
 });
 
-gulp.task('clean.npm', function (cb) {
+gulp.task('.tsd.install', function (callback) {
+	tsd({
+        command: 'reinstall',
+        config: './tsd.json'
+    }, callback);
+});
+
+gulp.task('.npm.clean', function (cb) {
     var del = require('del');
     del(['node_modules/'], cb);
 });
@@ -43,7 +47,7 @@ gulp.task('watch', function() {
     return rebundle();
 });
 
-gulp.task('build.debug', function() {
+gulp.task('.tsc.debug', function() {
     var bundler = browserify({debug: true})
         .add('alternator.ts')
         .plugin(tsify)
@@ -54,7 +58,7 @@ gulp.task('build.debug', function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('build.release', function() {
+gulp.task('.tsc.release', function() {
     var bundler = browserify()
         .add('alternator.ts')
         .plugin(tsify)
@@ -65,3 +69,13 @@ gulp.task('build.release', function() {
         .pipe(source('bundle.js'))
         .pipe(gulp.dest('.'));
 });
+
+
+gulp.task('default', function(callback) {
+    runSequence('.bower.install',
+                '.tsd.install',               
+                '.tsc.release',
+                callback);
+});
+
+
