@@ -5,10 +5,15 @@ var watchify = require('watchify');
 var browserifyShader = require("browserify-shader")
 var tsify = require('tsify');
 var uglify = require('uglifyify');
+var tsd = require('gulp-tsd');
 
 gulp.task('.bower.install', function () {
     var bower = require('gulp-bower');
     return bower();
+});
+ 
+gulp.task('.tsd.install', function () {
+    return gulp.src('./tsd.json').pipe(tsd());
 });
 
 gulp.task('.clean.bower.lib', function (cb) {
