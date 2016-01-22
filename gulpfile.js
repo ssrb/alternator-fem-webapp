@@ -70,10 +70,14 @@ gulp.task('.tsc.release', function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('.numeric.build', function() {
-	var exec = require('gulp-exec');
-	exec('./bower_components/numericjs/tools/build.sh');
-});
+gulp.task('.numeric.build', function (cb) {
+	var exec = require('child_process').exec;
+	exec('./bower_components/numericjs/tools/build.sh', function (err, stdout, stderr) {
+	console.log(stdout);
+	console.log(stderr);
+	cb(err);
+	});
+})
 
 gulp.task('default', function(callback) {
     runSequence('.bower.install',
