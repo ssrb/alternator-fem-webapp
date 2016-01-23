@@ -30,14 +30,13 @@
 
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 
-import msh = require('./mesh');
-import Mesh = msh.Mesh;
+import Mesh = require('./mesh');
 
 interface ILoopFunction {
     (ti : number): void;
 }
 
-export class ReverseConnectivityTable {
+class ReverseConnectivityTable {
 
     public constructor(mesh : Mesh) {
         var nverts = mesh.vertices.length / 2;
@@ -60,4 +59,5 @@ export class ReverseConnectivityTable {
 
     private head : number[];
     private next : number[];
-}
+};
+export = ReverseConnectivityTable;

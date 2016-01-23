@@ -2,7 +2,7 @@
 set -e # exit with nonzero exit code if anything fails
 mkdir _site
 cd _site
-cp ../alternator.html index.html
+cp ../alternator.html .
 cp ../bundle.js .
 cp -r ../msh .
 git init

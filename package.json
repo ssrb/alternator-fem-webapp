@@ -12,7 +12,7 @@
     "run-sequence": "^1.1.5",
     "tsify": "^0.13.2",
     "typescript": "^1.7.5",
-    "typescript-collections": "^1.0.5",
+    "typescript-collections": "github:basarat/typescript-collections#1ce538b384da24ee7ce4ed5f0ccdf5f97bbfa740",
     "uglifyify": "^3.0.1",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"

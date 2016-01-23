@@ -49,7 +49,8 @@ gulp.task('watch', function() {
 
 gulp.task('.tsc.debug', function() {
     var bundler = browserify({debug: true})
-        .add('alternator.ts')
+        .add('./alternator.ts')
+        .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(browserifyShader);
 
@@ -60,7 +61,8 @@ gulp.task('.tsc.debug', function() {
 
 gulp.task('.tsc.release', function() {
     var bundler = browserify()
-        .add('alternator.ts')
+        .add('./alternator.ts')
+        .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(browserifyShader)
         .transform(uglify);

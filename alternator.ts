@@ -25,20 +25,12 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="mesh.ts" />
-///<reference path="mesh.artist.ts" />
-///<reference path="solver.ts" />
+import Mesh = require('./mesh');
+import MeshArtist = require('./mesh.artist');
+import Solver = require('./solver');
+
+///<reference path="typings/browserify/browserify.d.ts"/>
 ///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
-
-import msh = require('./mesh');
-import Mesh = msh.Mesh;
-
-import ma = require('./mesh.artist');
-import MeshArtist = ma.MeshArtist;
-
-import slv = require('./solver');
-import Solver = slv.Solver;
-
 var glmat = require('./bower_components/gl-matrix/dist/gl-matrix-min.js');
 
 debugger;

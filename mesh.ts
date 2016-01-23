@@ -24,7 +24,7 @@
 // The views and conclusions contained in the software and documentation are those
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
-export class Mesh {
+class Mesh {
 
     constructor(vertices: number[],
                 triangles: number[],
@@ -92,6 +92,7 @@ export class Mesh {
     domainIndex:number[];
     edges:number[];
     boundaryIndex:number[];
-}
+};
+export = Mesh;
 
 

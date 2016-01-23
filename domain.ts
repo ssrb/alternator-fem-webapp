@@ -25,20 +25,15 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="mesh.ts"/>
+///<reference path="typings/browserify/browserify.d.ts"/>
 ///<reference path="my_typings/numericjs/numericjs.d.ts"/>
-///<reference path="node_modules/typescript-collections/collections.d.ts"/>
-
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
-require('./node_modules/typescript-collections/collections.js');
 
-import msh = require('./mesh');
-import Mesh = msh.Mesh;
+import Mesh = require('./mesh');
+import ReverseConnectivityTable = require('./rct');
+import collections = require('./node_modules/typescript-collections/collections');
 
-import rct = require('./rct');
-import ReverseConnectivityTable = rct.ReverseConnectivityTable;
-
-export enum BoundaryType {
+enum BoundaryType {
     Interior = 0,
     Sliding = 1,
     Up = 2,
@@ -47,7 +42,7 @@ export enum BoundaryType {
     Outside = 5
 }
 
-export enum DomainType {
+enum DomainType {
     Air = 0,
     RotorIron = 1,
     StatorIron = 2,
@@ -58,7 +53,7 @@ export enum DomainType {
     InductorCoilNegative = 22
 }
 
-export class Domain {
+class Domain {
 
     public constructor(mesh : Mesh) {
 
@@ -267,5 +262,5 @@ export class Domain {
     rct : ReverseConnectivityTable;
     area: number[];
     q: number[][][];
-}
-
+};
+export {BoundaryType, DomainType, Domain};

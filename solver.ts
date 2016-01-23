@@ -31,14 +31,13 @@
 
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 
-import msh = require('./mesh');
-import Mesh = msh.Mesh;
+import Mesh = require('./mesh');
 
 import dmn = require('./domain');
 import Domain = dmn.Domain;
 import DomainType = dmn.DomainType;
 
-export class Solver {
+class Solver {
 
     public constructor(rotor : Mesh, stator: Mesh) {
         this.rotor = rotor;
@@ -263,5 +262,5 @@ export class Solver {
 
     rotor : Mesh;
     stator : Mesh;
-}
-
+};
+export = Solver;

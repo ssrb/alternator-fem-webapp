@@ -25,16 +25,13 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="mesh.ts" />
-///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
 ///<reference path="typings/browserify/browserify.d.ts"/>
-
-import msh = require('./mesh');
-import Mesh = msh.Mesh;
-
+///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
 var glmat = require('./bower_components/gl-matrix/dist/gl-matrix-min.js');
 
-export class MeshArtist {
+import Mesh = require('./mesh');
+
+class MeshArtist {
 
     public constructor(gl: WebGLRenderingContext, mesh: Mesh) {
         this.gl = gl;
@@ -188,4 +185,5 @@ export class MeshArtist {
     private triangles : number[];
     private domainIndex : number[];
     private baryCoordinates : number[];
-}
+};
+export = MeshArtist;
