@@ -50,7 +50,8 @@ enum DomainType {
     SupplyCoilPositive = 19,
     InductorCoilPositive = 20,
     SupplyCoilNegative = 21,
-    InductorCoilNegative = 22
+    InductorCoilNegative = 22,
+    END
 }
 
 class Domain {
@@ -71,6 +72,7 @@ class Domain {
         this.up = new collections.Set<number>();
         this.down = new collections.Set<number>();
         this.sliding = new collections.Set<number>();
+        this.outside = new collections.Set<number>();
         for (var ei = 0; ei < mesh.edges.length / 2; ++ei) {
             var vi = mesh.edges[2 * ei], vj = mesh.edges[2 * ei + 1];
             switch (mesh.boundaryIndex[ei]) {
@@ -86,6 +88,9 @@ class Domain {
                     this.sliding.add(vi);
                     this.sliding.add(vj);
                     break;
+                case BoundaryType.Outside:
+                    this.outside.add(vi);
+                    this.outside.add(vj);
                 default:
                     break;
             }
@@ -129,6 +134,11 @@ class Domain {
                 ];
             }
             this.area[ti] = 0.5 * numeric.det([this.q[ti][0], this.q[ti][1]]);
+        }
+
+        this.areaPerDomainType = numeric.rep([DomainType.END], 0);    
+        for (var ti = 0; ti < ntris; ++ti) {
+            this.areaPerDomainType[this.mesh.domainIndex[ti]] += this.area[ti];
         }
     };
 
@@ -257,10 +267,12 @@ class Domain {
     up : collections.Set<number>;
     down : collections.Set<number>;
     sliding : collections.Set<number>;
+    outside : collections.Set<number>;
     phases : collections.Set<number>;
     centre : number;
     rct : ReverseConnectivityTable;
     area: number[];
+    areaPerDomainType: number[];
     q: number[][][];
 };
 export {BoundaryType, DomainType, Domain};

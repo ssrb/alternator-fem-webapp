@@ -56,7 +56,7 @@ class Solver {
         var sols : Array<[number[], number[]]> = [];
         var lastsol : [number[], number[]] = [numeric.rep([this.rotor.vertices.length], 0), numeric.rep([this.stator.vertices.length], 0)];
 
-        var dv = 12 * 32 * rpm / 60;
+        var dt = 60 / (12 * 32 * rpm);
 
         var rotor = new Domain(this.rotor);
         var stator = new Domain(this.stator);
@@ -64,7 +64,7 @@ class Solver {
         for (var i = -32; i < 32; ++i) {
             var theta = i * Math.PI / (6 * 32);
 
-            var [A,b] = Solver.assemble(rotor, stator, lastsol, theta, dv);
+            var [A,b] = Solver.assemble(rotor, stator, lastsol, theta, dt, i * dt);
 
             var SA = numeric.ccsSparse(A);
             var LUP = numeric.ccsLUP(SA, 1);
@@ -82,7 +82,8 @@ class Solver {
                     stator: Domain,
                     prevsol: [number[], number[]],
                     rotation: number,
-                    dv: number) : [number[][], number[]] {
+                    dt: number,
+                    t : number) : [number[][], number[]] {
 
         rotor.applyAntiPeriodicBoundaryConditions(rotation);
         stator.applyAntiPeriodicBoundaryConditions(rotation);
@@ -91,13 +92,13 @@ class Solver {
         var A : number[][] = numeric.rep([ndof, ndof], 0);
         var b : number[] = numeric.rep([ndof], 0);
 
-        Solver.assembleOne(rotor, prevsol[0], dv, A, b);
-        Solver.assembleOne(stator, prevsol[1], dv, A, b);
+        Solver.assembleOne(rotor, prevsol[0], dt, t, A, b);
+        Solver.assembleOne(stator, prevsol[1], dt, t, A, b);
 
         return [A, b];
     };
 
-    private static assembleOne(domain: Domain, prevsol: number[], dv: number, A: number[][], b: number[]) {
+    private static assembleOne(domain: Domain, prevsol: number[], dt: number, t: number, A: number[][], b: number[]) {
 
         // Nodal admittance matrix
         var Y: number[][] = numeric.rep([2, 2], 0);
@@ -126,7 +127,7 @@ class Solver {
                     var qj = (sj + 1) % 3;
 
                     var c = 0.0;
-                    c += dv * Solver.sigma(domain.mesh.domainIndex[ti]) * (si == sj ? area / 6 : area / 12);
+                    c += Solver.sigma(domain.mesh.domainIndex[ti]) * (si == sj ? area / 6 : area / 12) / dt;
                     c += Solver.reluctance(domain.mesh.domainIndex[ti]) * numeric.dot(domain.q[ti][qi], domain.q[ti][qj]) / (4 * area);
 
                     A[v2dof[vi]][v2dof[vj]] += coeff[vi] * coeff[vj] * c;
@@ -138,8 +139,8 @@ class Solver {
                 var vioo = tris[3 * ti + ioo];
 
                 var c = 0.0;
-                c += dv * Solver.sigma(domain.mesh.domainIndex[ti]) * area * (2 * prevsol[vi] + prevsol[vio] + prevsol[vioo]) / 12;
-                c += Solver.J(domain.mesh.domainIndex[ti]) * area / 3;
+                c += Solver.sigma(domain.mesh.domainIndex[ti]) * (area * (2 * prevsol[vi] + prevsol[vio] + prevsol[vioo]) / 12) / dt;
+                c += Solver.J(domain.mesh.domainIndex[ti], t) * area / 3;
 
                 b[v2dof[vi]] += coeff[vi] * c;
             });
@@ -149,12 +150,20 @@ class Solver {
                 var u = numeric.dot(Y, wflux[vi]);
 
                 domain.phases.forEach(function(vj) {
-                    A[v2dof[vi]][v2dof[vj]] += coeff[vi] * coeff[vj] * dv * Solver.h * numeric.dot(u, wflux[vj]);
+                    A[v2dof[vi]][v2dof[vj]] += coeff[vi] * coeff[vj] * Solver.h * numeric.dot(u, wflux[vj]) / dt;
                 });
                 
-                b[v2dof[vi]] += coeff[vi] * dv * Solver.h * numeric.dot(u, flux);
+                b[v2dof[vi]] += coeff[vi] * Solver.h * numeric.dot(u, flux) / dt;
             }
         }
+
+        // Apply the 0 vector potential Dirichlet boundary condition outside the stator.
+        domain.outside.forEach(function(vi) {
+            var d = v2dof[vi];
+            A[d][d] = Solver.kDirichletPenalty;
+            b[d] = 0;
+        });
+
     };
 
     private static computeFlux(domain: Domain, prevsol: number[], nphases: number) : [number[], number[][]] {
@@ -173,16 +182,17 @@ class Solver {
                 // We will divide again later one since we account for all triangles thrice
                 var solint = area * (prevsol[tris[3 * ti]] + prevsol[tris[3 * ti + 1]] + prevsol[tris[3 * ti + 2]]) / 3;
                 var wfluxvi = wflux[vi];
+                var psi = Solver.psi(domain, mesh.domainIndex[ti]);
                 switch (mesh.domainIndex[ti]) {
                     case DomainType.SupplyCoilPositive:
                     case DomainType.SupplyCoilNegative:
-                        wfluxvi[0] += Solver.psi(mesh.domainIndex[ti]) * area / 3;
-                        flux[0] += Solver.psi(mesh.domainIndex[ti]) * solint / 3;
+                        wfluxvi[0] += psi * area / 3;
+                        flux[0] += psi * solint / 3;
                         break;
                     case DomainType.InductorCoilNegative:
                     case DomainType.InductorCoilPositive:
-                        wfluxvi[1] += Solver.psi(mesh.domainIndex[ti]) * area / 3;
-                        flux[1] += Solver.psi(mesh.domainIndex[ti]) * solint / 3;                            
+                        wfluxvi[1] += psi * area / 3;
+                        flux[1] += psi * solint / 3;                            
                         break;
                     default:
                         break;
@@ -205,27 +215,27 @@ class Solver {
         }
     };
 
-    private static psi(domain : DomainType) : number {
-        switch (domain) {
-
+    private static psi(domain: Domain, domainType: DomainType): number {
+        var area = domain.areaPerDomainType[domainType];
+        switch (domainType) {
             case DomainType.SupplyCoilPositive:
             case DomainType.SupplyCoilNegative:
-                return Solver.Na / Solver.Sa;
-
+                return Solver.Na / area;
             case DomainType.InductorCoilPositive:
+                return Solver.Ni / area;
             case DomainType.InductorCoilNegative:
-                return Solver.Ni / Solver.Si
+                return -Solver.Ni / area;
 
             default:
                 return 0;
         }
     };
 
-    private static J(domain : DomainType) : number {
+    private static J(domain : DomainType, t : number) : number {
         switch (domain) {
             case DomainType.SupplyCoilPositive:
             case DomainType.SupplyCoilNegative:
-                return (Solver.Va  / Solver.Ra) * Solver.sigma(domain);
+                return (Solver.Va * Math.sin(2 * Math.PI * t * Solver.Fa) / Solver.Ra) * Solver.sigma(domain);
             default:
                 return 0;
         }
@@ -245,17 +255,18 @@ class Solver {
     };
 
     static kEpsilon = 10e-6;
+    static kDirichletPenalty = 10e9;
+ 
+    static h = 0.050; // meter
 
-    static h = 0.080;
-    static Va = 15;
-    static Ra = 1;
-    static Ri = 1000;
+    static Va = 15; // Volt peak to peak
+    static Fa = 50; // Hertz
+    static Ra = 1; // Ohm
 
-    static Na = 50; // alimentation est faite avec 50 spires par 1/2 encoche
-    static Sa = Solver.h;
+    static Ri = 1000; // Ohm
 
-    static Ni = 30; // alimentation est faite avec 50 spires par 1/2 encoche
-    static Si = Solver.h;
+    static Na = 50; // turn per 1/2 winding slot
+    static Ni = 30; // turn per 1/2 winding slot
 
     rotor : Mesh;
     stator : Mesh;
