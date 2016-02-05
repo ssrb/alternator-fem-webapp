@@ -47,10 +47,10 @@ enum DomainType {
     RotorIron = 1,
     StatorIron = 2,
     RotorCopper = 3,
-    SupplyCoilPositive = 19,
-    InductorCoilPositive = 20,
-    SupplyCoilNegative = 21,
-    InductorCoilNegative = 22,
+    SupplyCoilA = 19,
+    InductorCoilA = 20,
+    SupplyCoilB = 21,
+    InductorCoilB = 22,
     END
 }
 
@@ -103,10 +103,10 @@ class Domain {
         this.phases = new collections.Set<number>();
         for (var ti = 0; ti < ntris; ++ti) {
             switch (this.mesh.domainIndex[ti]) {
-                case DomainType.SupplyCoilPositive:
-                case DomainType.InductorCoilPositive:
-                case DomainType.SupplyCoilNegative:
-                case DomainType.InductorCoilNegative:
+                case DomainType.SupplyCoilA:
+                case DomainType.InductorCoilA:
+                case DomainType.SupplyCoilB:
+                case DomainType.InductorCoilB:
                     this.phases.add(tris[3 * ti]);
                     this.phases.add(tris[3 * ti + 1]);
                     this.phases.add(tris[3 * ti + 2]);

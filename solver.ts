@@ -184,13 +184,13 @@ class Solver {
                 var wfluxvi = wflux[vi];
                 var psi = Solver.psi(domain, mesh.domainIndex[ti]);
                 switch (mesh.domainIndex[ti]) {
-                    case DomainType.SupplyCoilPositive:
-                    case DomainType.SupplyCoilNegative:
+                    case DomainType.SupplyCoilA:
+                    case DomainType.SupplyCoilB:
                         wfluxvi[0] += psi * area / 3;
                         flux[0] += psi * solint / 3;
                         break;
-                    case DomainType.InductorCoilNegative:
-                    case DomainType.InductorCoilPositive:
+                    case DomainType.InductorCoilB:
+                    case DomainType.InductorCoilA:
                         wfluxvi[1] += psi * area / 3;
                         flux[1] += psi * solint / 3;                            
                         break;
@@ -204,26 +204,26 @@ class Solver {
     }
 
     private static reluctance(domain : DomainType) : number {
-        var vacuum = 1 / (4e-7 * Math.PI);
+        var vacuum = 4e-7 * Math.PI;
         switch (domain) {
             case DomainType.RotorIron:
-            case  DomainType.StatorIron:
-                var ironRelativeReluctance = 0.51636e-3;
-                return vacuum * ironRelativeReluctance;
+            case DomainType.StatorIron:
+                var iron = 0.51636e-3;
+                return iron / vacuum;
             default:
-                return vacuum;
+                return 1;
         }
     };
 
     private static psi(domain: Domain, domainType: DomainType): number {
         var area = domain.areaPerDomainType[domainType];
         switch (domainType) {
-            case DomainType.SupplyCoilPositive:
-            case DomainType.SupplyCoilNegative:
+            case DomainType.SupplyCoilA:
+            case DomainType.SupplyCoilB:
                 return Solver.Na / area;
-            case DomainType.InductorCoilPositive:
+            case DomainType.InductorCoilA:
                 return Solver.Ni / area;
-            case DomainType.InductorCoilNegative:
+            case DomainType.InductorCoilB:
                 return -Solver.Ni / area;
 
             default:
@@ -233,8 +233,8 @@ class Solver {
 
     private static J(domain : DomainType, t : number) : number {
         switch (domain) {
-            case DomainType.SupplyCoilPositive:
-            case DomainType.SupplyCoilNegative:
+            case DomainType.SupplyCoilA:
+            case DomainType.SupplyCoilB:
                 return (Solver.Va * Math.sin(2 * Math.PI * t * Solver.Fa) / Solver.Ra) * Solver.sigma(domain);
             default:
                 return 0;
@@ -243,10 +243,10 @@ class Solver {
 
     private static sigma(domain : DomainType) : number {
         switch (domain) {
-            case DomainType.SupplyCoilPositive:
-            case DomainType.SupplyCoilNegative:
-            case DomainType.InductorCoilNegative:
-            case DomainType.InductorCoilPositive:
+            case DomainType.SupplyCoilA:
+            case DomainType.SupplyCoilB:
+            case DomainType.InductorCoilB:
+            case DomainType.InductorCoilA:
             case DomainType.RotorCopper:
                 return 50e6;
             default:
