@@ -140,7 +140,7 @@ class Solver {
 
                 var c = 0.0;
                 c += Solver.sigma(domain.mesh.domainIndex[ti]) * (area * (2 * prevsol[vi] + prevsol[vio] + prevsol[vioo]) / 12) / dt;
-                c += Solver.J(domain.mesh.domainIndex[ti], t) * area / 3;
+                c += Solver.I0(domain.mesh.domainIndex[ti], t) * area / 3;
 
                 b[v2dof[vi]] += coeff[vi] * c;
             });
@@ -231,7 +231,7 @@ class Solver {
         }
     };
 
-    private static J(domain : DomainType, t : number) : number {
+    private static I0(domain : DomainType, t : number) : number {
         switch (domain) {
             case DomainType.SupplyCoilA:
             case DomainType.SupplyCoilB:
