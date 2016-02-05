@@ -211,7 +211,7 @@ class Solver {
                 var iron = 0.51636e-3;
                 return iron / vacuum;
             default:
-                return 1;
+                return 1 / vacuum;
         }
     };
 
