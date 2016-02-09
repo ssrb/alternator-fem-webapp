@@ -1,4 +1,5 @@
 bundle.js
+solver_webworker.js
 node_modules
 bower_components
 typings

@@ -47,7 +47,7 @@ gulp.task('watch', function() {
     return rebundle();
 });
 
-gulp.task('.tsc.debug', function() {
+gulp.task('.ui.debug', function() {
     var bundler = browserify({debug: true})
         .add('./alternator.ts')
         .add('./node_modules/typescript-collections/collections.ts')
@@ -59,7 +59,7 @@ gulp.task('.tsc.debug', function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('.tsc.release', function() {
+gulp.task('.ui.release', function() {
     var bundler = browserify()
         .add('./alternator.ts')
         .add('./node_modules/typescript-collections/collections.ts')
@@ -69,6 +69,31 @@ gulp.task('.tsc.release', function() {
 
     return bundler.bundle()
         .pipe(source('bundle.js'))
+        .pipe(gulp.dest('.'));
+});
+
+gulp.task('.solver.debug', function() {
+    var bundler = browserify({debug: true})
+        .add('./solver_webworker.ts')
+        .add('./node_modules/typescript-collections/collections.ts')
+        .plugin(tsify)
+        .transform(browserifyShader)
+    
+    return bundler.bundle()
+        .pipe(source('solver_webworker.js'))
+        .pipe(gulp.dest('.'));
+});
+
+gulp.task('.solver.release', function() {
+    var bundler = browserify()
+        .add('./solver_webworker.ts')
+        .add('./node_modules/typescript-collections/collections.ts')
+        .plugin(tsify)
+        .transform(browserifyShader)
+        .transform(uglify);
+
+    return bundler.bundle()
+        .pipe(source('solver_webworker.js'))
         .pipe(gulp.dest('.'));
 });
 
@@ -85,7 +110,8 @@ gulp.task('default', function(callback) {
     runSequence('.bower.install',
     			'.numeric.build',
                 '.tsd.install',               
-                '.tsc.release',
+                '.ui.release',
+                '.solver.release',
                 callback);
 });
 

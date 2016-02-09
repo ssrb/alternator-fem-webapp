@@ -27,7 +27,6 @@
 
 import Mesh = require('./mesh');
 import MeshArtist = require('./mesh.artist');
-import Solver = require('./solver');
 
 ///<reference path="typings/browserify/browserify.d.ts"/>
 ///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
@@ -62,16 +61,16 @@ window.onload = () => {
             var stator = Mesh.load(statorreq);
             var rotor = Mesh.load(rotorreq);
 
-            var solver = new Solver(rotor, stator);
-
-            var rpm = 3000;
-            var sols = solver.solve(rpm);
-
+            var sols: number[][][] = null;
             var magnitude = 0;
-            for (var soli = 0; soli < sols.length; ++soli) {
-                var rsol = sols[soli][0], ssol = sols[soli][1];
-                magnitude = Math.max(Math.max.apply(Math, ssol.map(Math.abs)), Math.max.apply(Math, rsol.map(Math.abs)), magnitude);
+
+            var myWorker = new Worker("solver_webworker.js");
+            myWorker.onmessage = function(e) {
+                sols = e.data[0];
+                magnitude = e.data[1];
+                myWorker.terminate();
             }
+            myWorker.postMessage([rotor, stator]);
 
             var sartist = new MeshArtist(gl, stator);
             var rartist = new MeshArtist(gl, rotor);
@@ -101,20 +100,26 @@ window.onload = () => {
                     theta -= 2 * Math.PI / 6;
                 }
 
-                // Rotor angle is a multiple of phi = Pi / (6 * 32) (32 intervals on a PI / 6 domain).
-                // We got 64 != rotor/stator angle [-32 * phi; 32 * phi[.
-                // Angle -32 * phi matches solution index 0, angles 0 matches solution index 32.
-                var idx = Math.floor(theta / (Math.PI / (6 * 32))) + 32;
+                if (sols) {
+                    // Rotor angle is a multiple of phi = Pi / (6 * 32) (32 intervals on a PI / 6 domain).
+                    // We got 64 != rotor/stator angle [-32 * phi; 32 * phi[.
+                    // Angle -32 * phi matches solution index 0, angles 0 matches solution index 32.
+                    var idx = Math.floor(theta / (Math.PI / (6 * 32))) + 32;
 
-                var rsol = sols[idx][0], ssol = sols[idx][1];
+                    var rsol = sols[idx][0], ssol = sols[idx][1];
 
-                sartist.drawSol(ssol, magnitude, prMatrix, mvMatrix);
-                sartist.draw(prMatrix, mvMatrix);
+                    sartist.drawSol(ssol, magnitude, prMatrix, mvMatrix);
+                    sartist.draw(prMatrix, mvMatrix);
 
-                glmat.mat4.rotateZ(mvMatrix, mvMatrix, theta);
+                    glmat.mat4.rotateZ(mvMatrix, mvMatrix, theta);
 
-                rartist.drawSol(rsol, magnitude, prMatrix, mvMatrix);
-                rartist.draw(prMatrix, mvMatrix);
+                    rartist.drawSol(rsol, magnitude, prMatrix, mvMatrix);
+                    rartist.draw(prMatrix, mvMatrix);
+                } else {
+                    sartist.draw(prMatrix, mvMatrix);
+                    glmat.mat4.rotateZ(mvMatrix, mvMatrix, theta);                   
+                    rartist.draw(prMatrix, mvMatrix);
+                }
 
                 gl.flush();
 
