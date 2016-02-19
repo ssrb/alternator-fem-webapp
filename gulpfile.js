@@ -74,7 +74,7 @@ gulp.task('.ui.release', function() {
 
 gulp.task('.solver.debug', function() {
     var bundler = browserify({debug: true})
-        .add('./solver_webworker.ts')
+        .add('./solver-webworker.ts')
         .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(browserifyShader)
@@ -86,7 +86,7 @@ gulp.task('.solver.debug', function() {
 
 gulp.task('.solver.release', function() {
     var bundler = browserify()
-        .add('./solver_webworker.ts')
+        .add('./solver-webworker.ts')
         .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(browserifyShader)

@@ -26,7 +26,7 @@
 // either expressed or implied, of the FreeBSD Project.
 
 import Mesh = require('./mesh');
-import MeshArtist = require('./mesh.artist');
+import MeshArtist = require('./mesh-artist');
 
 ///<reference path="typings/browserify/browserify.d.ts"/>
 ///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
@@ -64,7 +64,7 @@ window.onload = () => {
             var sols: number[][][] = null;
             var magnitude = 0;
 
-            var myWorker = new Worker("solver_webworker.js");
+            var myWorker = new Worker("solver-webworker.js");
             myWorker.onmessage = function(e) {
                 sols = e.data[0];
                 magnitude = e.data[1];
