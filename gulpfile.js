@@ -80,7 +80,7 @@ gulp.task('.solver.debug', function() {
         .transform(browserifyShader)
     
     return bundler.bundle()
-        .pipe(source('solver_webworker.js'))
+        .pipe(source('solver-webworker.js'))
         .pipe(gulp.dest('.'));
 });
 
@@ -93,7 +93,7 @@ gulp.task('.solver.release', function() {
         .transform(uglify);
 
     return bundler.bundle()
-        .pipe(source('solver_webworker.js'))
+        .pipe(source('solver-webworker.js'))
         .pipe(gulp.dest('.'));
 });
 

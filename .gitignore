@@ -1,5 +1,5 @@
 bundle.js
-solver_webworker.js
+solver-webworker.js
 node_modules
 bower_components
 typings
