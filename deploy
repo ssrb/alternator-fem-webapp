@@ -3,7 +3,7 @@ set -e # exit with nonzero exit code if anything fails
 mkdir _site
 cd _site
 cp ../alternator.html .
-cp ../bundle.js ../solver_webworker.js .
+cp ../bundle.js ../solver-webworker.js .
 cp -r ../msh .
 git init
 git config --global user.email "sb@unhexhexium.net"
