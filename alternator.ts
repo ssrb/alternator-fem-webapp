@@ -47,7 +47,6 @@ window.onload = () => {
     gl.enable( gl.BLEND );
     gl.blendEquation( gl.FUNC_ADD);
     gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.enable(gl.BLEND);
     gl.clearColor(0, 0, 0, 1);
 
     var statorreq = new XMLHttpRequest();
@@ -85,6 +84,7 @@ window.onload = () => {
                 var width = window.innerWidth - 50;
                 var height = window.innerHeight - 10;
 
+                gl.viewport(0, 0, width, height);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
                 var mvMatrix = <Float32Array> glmat.mat4.create();
