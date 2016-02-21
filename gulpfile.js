@@ -77,7 +77,6 @@ gulp.task('.solver.debug', function() {
         .add('./solver-webworker.ts')
         .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
-        .transform(browserifyShader)
     
     return bundler.bundle()
         .pipe(source('solver-webworker.js'))
@@ -89,7 +88,6 @@ gulp.task('.solver.release', function() {
         .add('./solver-webworker.ts')
         .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
-        .transform(browserifyShader)
         .transform(uglify);
 
     return bundler.bundle()
