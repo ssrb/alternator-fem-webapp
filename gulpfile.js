@@ -50,7 +50,6 @@ gulp.task('watch', function() {
 gulp.task('.ui.debug', function() {
     var bundler = browserify({debug: true})
         .add('./alternator.ts')
-        .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(browserifyShader);
 
@@ -62,7 +61,6 @@ gulp.task('.ui.debug', function() {
 gulp.task('.ui.release', function() {
     var bundler = browserify()
         .add('./alternator.ts')
-        .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(browserifyShader)
         .transform(uglify);
@@ -75,7 +73,6 @@ gulp.task('.ui.release', function() {
 gulp.task('.solver.debug', function() {
     var bundler = browserify({debug: true})
         .add('./solver-webworker.ts')
-        .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
     
     return bundler.bundle()
@@ -86,7 +83,6 @@ gulp.task('.solver.debug', function() {
 gulp.task('.solver.release', function() {
     var bundler = browserify()
         .add('./solver-webworker.ts')
-        .add('./node_modules/typescript-collections/collections.ts')
         .plugin(tsify)
         .transform(uglify);
 
