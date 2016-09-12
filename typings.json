@@ -1,0 +1,8 @@
+{
+  "name": "alternator",
+  "globalDependencies": {
+    "gl-matrix": "github:DefinitelyTyped/DefinitelyTyped/gl-matrix/gl-matrix.d.ts#1da639a106527e0c4010b354a1efe52a3059a291",
+    "browserify": "github:DefinitelyTyped/DefinitelyTyped/browserify/browserify.d.ts#1da639a106527e0c4010b354a1efe52a3059a291",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#1da639a106527e0c4010b354a1efe52a3059a291"
+  }
+}
