@@ -25,7 +25,7 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="typings/browserify/browserify.d.ts"/>
+///<reference path="typings/index.d.ts"/>
 ///<reference path="my_typings/numericjs/numericjs.d.ts"/>
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 

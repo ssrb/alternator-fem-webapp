@@ -28,8 +28,7 @@
 import Mesh = require('./mesh');
 import MeshArtist = require('./mesh-artist');
 
-///<reference path="typings/browserify/browserify.d.ts"/>
-///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
+///<reference path="typings/index.d.ts"/>
 var glmat = require('./bower_components/gl-matrix/dist/gl-matrix-min.js');
 
 debugger;

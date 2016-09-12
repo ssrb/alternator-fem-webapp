@@ -25,8 +25,7 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="typings/browserify/browserify.d.ts"/>
-///<reference path="typings/gl-matrix/gl-matrix.d.ts"/>
+///<reference path="typings/index.d.ts"/>
 var glmat = require('./bower_components/gl-matrix/dist/gl-matrix-min.js');
 
 import Mesh = require('./mesh');
