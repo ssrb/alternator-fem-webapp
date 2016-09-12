@@ -31,7 +31,7 @@ require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 
 import Mesh = require('./mesh');
 import ReverseConnectivityTable = require('./rct');
-import collections = require('./node_modules/typescript-collections/collections');
+import collections = require('./node_modules/typescript-collections');
 
 enum BoundaryType {
     Interior = 0,
