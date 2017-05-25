@@ -41,7 +41,7 @@ class Mesh {
     public static load(req:XMLHttpRequest):Mesh {
         if (req.readyState == XMLHttpRequest.DONE) {
 
-            var lines = req.responseText.split("\n");
+            var lines = req.responseText.split(/\r?\n/);
             var array = lines[0].match(/^\s*(\S+)\s+(\S+)\s+(\S+)$/);
             var nverts = parseInt(array[1]);
             var ntris = parseInt(array[2]);
