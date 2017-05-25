@@ -9,7 +9,7 @@ before_install:
 - cp deploy_key ~/.ssh/id_rsa
 before_script:
 - npm install -g gulp
-- npm install -g uglifyjs
+- npm install -g uglify-js
 script: 
 - gulp
 - bash deploy
