@@ -26,7 +26,7 @@
 // either expressed or implied, of the FreeBSD Project.
 
 ///<reference path="typings/index.d.ts"/>
-var glmat = require('./bower_components/gl-matrix/dist/gl-matrix-min.js');
+var glmat = require('gl-matrix');
 
 import Mesh = require('./mesh');
 
@@ -52,13 +52,13 @@ class MeshArtist {
         require('./shaders/sol.fs');
 
         this.meshProgram = gl.createProgram();
-        gl.attachShader(this.meshProgram, MeshArtist.getShader( gl, './shaders/mesh.vs' ));
-        gl.attachShader(this.meshProgram, MeshArtist.getShader( gl, './shaders/mesh.fs' ));
+        gl.attachShader(this.meshProgram, MeshArtist.getShader(gl, './shaders/mesh.vs'));
+        gl.attachShader(this.meshProgram, MeshArtist.getShader(gl, './shaders/mesh.fs'));
         gl.linkProgram(this.meshProgram);
 
         this.solProgram = gl.createProgram();
-        gl.attachShader(this.solProgram, MeshArtist.getShader( gl, './shaders/sol.vs' ));
-        gl.attachShader(this.solProgram, MeshArtist.getShader( gl, './shaders/sol.fs' ));
+        gl.attachShader(this.solProgram, MeshArtist.getShader(gl, './shaders/sol.vs'));
+        gl.attachShader(this.solProgram, MeshArtist.getShader(gl, './shaders/sol.fs'));
         gl.linkProgram(this.solProgram);
 
         var vertices = this.mesh.vertices;
@@ -71,18 +71,18 @@ class MeshArtist {
         this.baryCoordinates = new Array<number>(9 * ntriangles);
         for (var i = 0; i < ntriangles; ++i) {
 
-            this.triangles[6 * i]       = vertices[2 * triangles[3 * i]];
-            this.triangles[6 * i + 1]   = vertices[2 * triangles[3 * i] + 1];
+            this.triangles[6 * i] = vertices[2 * triangles[3 * i]];
+            this.triangles[6 * i + 1] = vertices[2 * triangles[3 * i] + 1];
 
-            this.triangles[6 * i + 2]   = vertices[2 * triangles[3 * i + 1]];
-            this.triangles[6 * i + 3]   = vertices[2 * triangles[3 * i + 1] + 1];
+            this.triangles[6 * i + 2] = vertices[2 * triangles[3 * i + 1]];
+            this.triangles[6 * i + 3] = vertices[2 * triangles[3 * i + 1] + 1];
 
-            this.triangles[6 * i + 4]   = vertices[2 * triangles[3 * i + 2]];
-            this.triangles[6 * i + 5]   = vertices[2 * triangles[3 * i + 2] + 1];
+            this.triangles[6 * i + 4] = vertices[2 * triangles[3 * i + 2]];
+            this.triangles[6 * i + 5] = vertices[2 * triangles[3 * i + 2] + 1];
 
-            this.domainIndex[3 * i]  = this.domainIndex[3 * i + 1] = this.domainIndex[3 * i + 2] = domainIndex[i];
+            this.domainIndex[3 * i] = this.domainIndex[3 * i + 1] = this.domainIndex[3 * i + 2] = domainIndex[i];
 
-            this.baryCoordinates[9 * i]     = 1;
+            this.baryCoordinates[9 * i] = 1;
             this.baryCoordinates[9 * i + 1] = 0;
             this.baryCoordinates[9 * i + 2] = 0;
 
@@ -96,7 +96,7 @@ class MeshArtist {
         }
     }
 
-    public draw(prMatrix : Float32Array, mvMatrix : Float32Array) {
+    public draw(prMatrix: Float32Array, mvMatrix: Float32Array) {
         var gl = this.gl;
 
         gl.useProgram(this.meshProgram);
@@ -122,7 +122,7 @@ class MeshArtist {
         }
     }
 
-    public drawSol(sol: number[], magnitude: number, prMatrix : Float32Array, mvMatrix : Float32Array) {
+    public drawSol(sol: number[], magnitude: number, prMatrix: Float32Array, mvMatrix: Float32Array) {
         var gl = this.gl;
         var mesh = this.mesh;
 
@@ -138,7 +138,7 @@ class MeshArtist {
         gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sol), gl.STATIC_DRAW);
         gl.vertexAttribPointer(solLocation, 1, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray( solLocation );
+        gl.enableVertexAttribArray(solLocation);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.triangles), gl.STATIC_DRAW);
@@ -150,20 +150,20 @@ class MeshArtist {
         for (var i = 0; i < 12; ++i) {
             gl.uniformMatrix4fv(gl.getUniformLocation(this.solProgram, 'mvMatrix'), false, mvMatrix);
             gl.uniform1f(gl.getUniformLocation(this.solProgram, 'sign'), i & 1 ? -1 : 1);
-            gl.drawElements(gl.TRIANGLES, mesh.triangles.length, gl.UNSIGNED_SHORT ,0);
+            gl.drawElements(gl.TRIANGLES, mesh.triangles.length, gl.UNSIGNED_SHORT, 0);
             glmat.mat4.rotateZ(mvMatrix, mvMatrix, 2 * Math.PI / 12);
         }
     }
 
-    private static getShader(gl : WebGLRenderingContext, path : string) : WebGLShader {
+    private static getShader(gl: WebGLRenderingContext, path: string): WebGLShader {
 
-        var shader : WebGLShader;
+        var shader: WebGLShader;
 
         var ext = path.substring(path.lastIndexOf(".") + 1);
 
-        if ( ext == 'fs' )
-            shader = gl.createShader ( gl.FRAGMENT_SHADER );
-        else if ( ext == 'vs' )
+        if (ext == 'fs')
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        else if (ext == 'vs')
             shader = gl.createShader(gl.VERTEX_SHADER);
         else return null;
 
@@ -179,10 +179,10 @@ class MeshArtist {
 
     private gl: WebGLRenderingContext;
     private mesh: Mesh;
-    private meshProgram : WebGLProgram;
-    private solProgram : WebGLProgram;
-    private triangles : number[];
-    private domainIndex : number[];
-    private baryCoordinates : number[];
+    private meshProgram: WebGLProgram;
+    private solProgram: WebGLProgram;
+    private triangles: number[];
+    private domainIndex: number[];
+    private baryCoordinates: number[];
 };
 export = MeshArtist;

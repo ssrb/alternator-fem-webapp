@@ -29,23 +29,23 @@ import Mesh = require('./mesh');
 import MeshArtist = require('./mesh-artist');
 
 ///<reference path="typings/index.d.ts"/>
-var glmat = require('./bower_components/gl-matrix/dist/gl-matrix-min.js');
+var glmat = require('gl-matrix');
 
 debugger;
 
 window.onload = () => {
-    var canvas = <HTMLCanvasElement> document.createElement("canvas");
+    var canvas = <HTMLCanvasElement>document.createElement("canvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     document.body.appendChild(canvas);
 
-    var gl =  <WebGLRenderingContext> canvas.getContext("webgl", {});
+    var gl = <WebGLRenderingContext>canvas.getContext("webgl", {});
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     gl.clearDepth(1.0);
-    gl.enable( gl.BLEND );
-    gl.blendEquation( gl.FUNC_ADD);
-    gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND);
+    gl.blendEquation(gl.FUNC_ADD);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.clearColor(0, 0, 0, 1);
 
     var statorreq = new XMLHttpRequest();
@@ -63,7 +63,7 @@ window.onload = () => {
             var magnitude = 0;
 
             var myWorker = new Worker("solver-webworker.js");
-            myWorker.onmessage = function(e) {
+            myWorker.onmessage = function (e) {
                 sols = e.data[0];
                 magnitude = e.data[1];
                 myWorker.terminate();
@@ -86,11 +86,11 @@ window.onload = () => {
                 gl.viewport(0, 0, width, height);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
-                var mvMatrix = <Float32Array> glmat.mat4.create();
+                var mvMatrix = <Float32Array>glmat.mat4.create();
                 glmat.mat4.translate(mvMatrix, mvMatrix, [0, 0, -0.5]);
 
-                var prMatrix = <Float32Array> glmat.mat4.create();
-                glmat.mat4.ortho(prMatrix, - 0.3 * width/height, 0.3 *width/height, -0.3, 0.3, -1, 1);
+                var prMatrix = <Float32Array>glmat.mat4.create();
+                glmat.mat4.ortho(prMatrix, - 0.3 * width / height, 0.3 * width / height, -0.3, 0.3, -1, 1);
 
                 // Rotate the rotor
                 var dt = (timeNow - lastTime) / (60 * 1000);
@@ -116,7 +116,7 @@ window.onload = () => {
                     rartist.draw(prMatrix, mvMatrix);
                 } else {
                     sartist.draw(prMatrix, mvMatrix);
-                    glmat.mat4.rotateZ(mvMatrix, mvMatrix, theta);                   
+                    glmat.mat4.rotateZ(mvMatrix, mvMatrix, theta);
                     rartist.draw(prMatrix, mvMatrix);
                 }
 
