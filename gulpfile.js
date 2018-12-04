@@ -12,7 +12,7 @@ gulp.task('.bower.install', function () {
     var bower = require('gulp-bower');
     return bower();
 });
- 
+
 gulp.task('.bower.clean', function (cb) {
     var del = require('del');
     del(['lib/'], cb);
@@ -27,27 +27,27 @@ gulp.task('.npm.clean', function (cb) {
     del(['node_modules/'], cb);
 });
 
-gulp.task('watch', function() {
-    var bundler = watchify(browserify({debug: true})
+gulp.task('watch', function () {
+    var bundler = watchify(browserify({ debug: true })
         .add('alternator.ts')
-        .plugin(tsify)
+        .plugin(tsify, { target: 'es5' })
         .transform(browserifyShader));
 
     bundler.on('update', rebundle)
- 
-    function rebundle () {
+
+    function rebundle() {
         return bundler.bundle()
-          .pipe(source('bundle.js'))
-          .pipe(gulp.dest('.'))
+            .pipe(source('bundle.js'))
+            .pipe(gulp.dest('.'))
     }
-     
+
     return rebundle();
 });
 
-gulp.task('.ui.debug', function() {
-    var bundler = browserify({debug: true})
+gulp.task('.ui.debug', function () {
+    var bundler = browserify({ debug: true })
         .add('./alternator.ts')
-        .plugin(tsify)
+        .plugin(tsify, { target: 'es5' })
         .transform(browserifyShader);
 
     return bundler.bundle()
@@ -55,10 +55,10 @@ gulp.task('.ui.debug', function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('.ui.release', function() {
+gulp.task('.ui.release', function () {
     var bundler = browserify()
         .add('./alternator.ts')
-        .plugin(tsify)
+        .plugin(tsify, { target: 'es5' })
         .transform(browserifyShader)
         .transform(uglify);
 
@@ -67,20 +67,20 @@ gulp.task('.ui.release', function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('.solver.debug', function() {
-    var bundler = browserify({debug: true})
+gulp.task('.solver.debug', function () {
+    var bundler = browserify({ debug: true })
         .add('./solver-webworker.ts')
-        .plugin(tsify)
-    
+        .plugin(tsify, { target: 'es5' })
+
     return bundler.bundle()
         .pipe(source('solver-webworker.js'))
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('.solver.release', function() {
+gulp.task('.solver.release', function () {
     var bundler = browserify()
         .add('./solver-webworker.ts')
-        .plugin(tsify)
+        .plugin(tsify, { target: 'es5' })
         .transform(uglify);
 
     return bundler.bundle()
@@ -89,21 +89,21 @@ gulp.task('.solver.release', function() {
 });
 
 gulp.task('.numeric.build', function (cb) {
-	var exec = require('child_process').exec;
-	exec('./bower_components/numericjs/tools/build.sh', function (err, stdout, stderr) {
-	console.log(stdout);
-	console.log(stderr);
-	cb(err);
-	});
+    var exec = require('child_process').exec;
+    exec('./bower_components/numericjs/tools/build.sh', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 })
 
-gulp.task('default', function(callback) {
+gulp.task('default', function (callback) {
     runSequence('.bower.install',
-    			'.numeric.build',
-                '.typings.install',               
-                '.ui.release',
-                '.solver.release',
-                callback);
+        '.numeric.build',
+        '.typings.install',
+        '.ui.release',
+        '.solver.release',
+        callback);
 });
 
 

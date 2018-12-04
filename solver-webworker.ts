@@ -28,7 +28,7 @@
 ///<reference path="typings/index.d.ts"/>
 import Solver = require('./solver');
 
-onmessage = function(e) {
+onmessage = function (e) {
 
 	console.log('Worker starts computing magnetic vector potential');
 
@@ -44,7 +44,7 @@ onmessage = function(e) {
 	}
 
 	console.log('Done. Posting result.');
-	
-	this.postMessage([sols, magnitude]);
+
+	(<any>this).postMessage([sols, magnitude]);
 }
 
