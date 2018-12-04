@@ -17,7 +17,6 @@
     "tests"
   ],
   "dependencies": {
-    "numericjs": "~1.2.6",
-    "gl-matrix": "~2.3.1"
+    "numericjs": "~1.2.6"
   }
 }
