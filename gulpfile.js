@@ -5,12 +5,7 @@ var watchify = require('watchify');
 var browserifyShader = require("browserify-shader")
 var tsify = require('tsify');
 var uglify = require('uglifyify');
-var typings = require('gulp-typings');
 var runSequence = require('run-sequence');
-
-gulp.task('.typings.install', function (callback) {
-    return gulp.src("./typings.json").pipe(typings());
-});
 
 gulp.task('.npm.clean', function (cb) {
     var del = require('del');
@@ -89,8 +84,7 @@ gulp.task('.numeric.build', function (cb) {
 
 gulp.task('default', function (callback) {
     runSequence(
-        '.numeric.build',
-        '.typings.install',
+        //'.numeric.build',
         '.ui.release',
         '.solver.release',
         callback);

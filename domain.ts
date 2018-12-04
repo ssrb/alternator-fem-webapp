@@ -26,7 +26,6 @@
 // either expressed or implied, of the FreeBSD Project.
 
 ///<reference path="my_typings/numericjs/numericjs.d.ts"/>
-require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 
 import Mesh = require('./mesh');
 import ReverseConnectivityTable = require('./rct');

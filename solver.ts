@@ -25,8 +25,6 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
-
 import Mesh = require('./mesh');
 
 import dmn = require('./domain');
