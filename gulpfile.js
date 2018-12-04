@@ -8,16 +8,6 @@ var uglify = require('uglifyify');
 var typings = require('gulp-typings');
 var runSequence = require('run-sequence');
 
-gulp.task('.bower.install', function () {
-    var bower = require('gulp-bower');
-    return bower();
-});
-
-gulp.task('.bower.clean', function (cb) {
-    var del = require('del');
-    del(['lib/'], cb);
-});
-
 gulp.task('.typings.install', function (callback) {
     return gulp.src("./typings.json").pipe(typings());
 });
@@ -98,7 +88,7 @@ gulp.task('.numeric.build', function (cb) {
 })
 
 gulp.task('default', function (callback) {
-    runSequence('.bower.install',
+    runSequence(
         '.numeric.build',
         '.typings.install',
         '.ui.release',
