@@ -4,6 +4,9 @@
   "description": "FE analysis of an alternator in your web browser",
   "main": "bundle.js",
   "dependencies": {
+    "@types/gl-matrix": "^2.4.0",
+    "@types/node": "^8.10.1",
+    "@types/browserify": "^12.0.33",
     "browserify": "^13.0.0",
     "browserify-shader": "^0.1.2",
     "gulp": "^3.9.0",
