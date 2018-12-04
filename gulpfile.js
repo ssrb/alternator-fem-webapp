@@ -73,18 +73,8 @@ gulp.task('.solver.release', function () {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('.numeric.build', function (cb) {
-    var exec = require('child_process').exec;
-    exec('./bower_components/numericjs/tools/build.sh', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-})
-
 gulp.task('default', function (callback) {
     runSequence(
-        //'.numeric.build',
         '.ui.release',
         '.solver.release',
         callback);

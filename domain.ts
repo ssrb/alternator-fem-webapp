@@ -26,10 +26,11 @@
 // either expressed or implied, of the FreeBSD Project.
 
 ///<reference path="my_typings/numericjs/numericjs.d.ts"/>
+import * as numeric from 'numeric';
 
 import Mesh = require('./mesh');
 import ReverseConnectivityTable = require('./rct');
-import collections = require('./node_modules/typescript-collections');
+import * as collections from 'typescript-collections';
 
 enum BoundaryType {
     Interior = 0,

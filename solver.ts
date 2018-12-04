@@ -31,6 +31,8 @@ import dmn = require('./domain');
 import Domain = dmn.Domain;
 import DomainType = dmn.DomainType;
 
+import * as numeric from 'numeric';
+
 class Solver {
 
     public constructor(rotor: Mesh, stator: Mesh) {

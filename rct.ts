@@ -26,6 +26,7 @@
 // either expressed or implied, of the FreeBSD Project.
 
 import Mesh = require('./mesh');
+import * as numeric from 'numeric';
 
 interface ILoopFunction {
     (ti: number): void;
