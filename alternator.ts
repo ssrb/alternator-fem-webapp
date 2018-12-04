@@ -28,7 +28,6 @@
 import Mesh = require('./mesh');
 import MeshArtist = require('./mesh-artist');
 
-///<reference path="typings/index.d.ts"/>
 var glmat = require('gl-matrix');
 
 debugger;

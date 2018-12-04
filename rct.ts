@@ -25,18 +25,17 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="typings/index.d.ts"/>
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 
 import Mesh = require('./mesh');
 
 interface ILoopFunction {
-    (ti : number): void;
+    (ti: number): void;
 }
 
 class ReverseConnectivityTable {
 
-    public constructor(mesh : Mesh) {
+    public constructor(mesh: Mesh) {
         var nverts = mesh.vertices.length / 2;
         this.head = numeric.rep([nverts], -1);
         this.next = numeric.rep([mesh.triangles.length], -1);
@@ -47,7 +46,7 @@ class ReverseConnectivityTable {
         }
     }
 
-    public forEach(vi : number, callback: ILoopFunction) {
+    public forEach(vi: number, callback: ILoopFunction) {
         var p = this.head[vi];
         while (p != -1) {
             callback(Math.floor(p / 3));
@@ -55,7 +54,7 @@ class ReverseConnectivityTable {
         }
     }
 
-    private head : number[];
-    private next : number[];
+    private head: number[];
+    private next: number[];
 };
 export = ReverseConnectivityTable;

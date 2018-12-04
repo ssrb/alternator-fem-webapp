@@ -25,7 +25,6 @@
 // of the authors and should not be interpreted as representing official policies,
 // either expressed or implied, of the FreeBSD Project.
 
-///<reference path="typings/index.d.ts"/>
 ///<reference path="my_typings/numericjs/numericjs.d.ts"/>
 require('./bower_components/numericjs/lib/numeric-1.2.6.min.js');
 
@@ -56,7 +55,7 @@ enum DomainType {
 
 class Domain {
 
-    public constructor(mesh : Mesh) {
+    public constructor(mesh: Mesh) {
 
         this.mesh = mesh;
 
@@ -136,13 +135,13 @@ class Domain {
             this.area[ti] = 0.5 * numeric.det([this.q[ti][0], this.q[ti][1]]);
         }
 
-        this.areaPerDomainType = numeric.rep([DomainType.END], 0);    
+        this.areaPerDomainType = numeric.rep([DomainType.END], 0);
         for (var ti = 0; ti < ntris; ++ti) {
             this.areaPerDomainType[this.mesh.domainIndex[ti]] += this.area[ti];
         }
     };
 
-    public applyAntiPeriodicBoundaryConditions(rotation: number) : void {
+    public applyAntiPeriodicBoundaryConditions(rotation: number): void {
 
         var mesh = this.mesh;
         var up = this.up;
@@ -156,23 +155,22 @@ class Domain {
 
         var ndof = 0;
         for (var vi = 0; vi < nverts; ++vi) {
-            if (!this.up.contains(vi) && !this.down.contains(vi))
-            {
+            if (!this.up.contains(vi) && !this.down.contains(vi)) {
                 v2dof[vi] = ndof++;
             }
         }
 
-        function hypot (x: number, y: number) : number {
+        function hypot(x: number, y: number): number {
             return Math.sqrt(x * x + y * y);
         }
 
         var rotorUpTouchStator = rotation <= 0;
 
         var centre = -1;
-        down.forEach( function(vd) {
+        down.forEach(function (vd) {
             v2dof[vd] = ndof;
             var downLen = hypot(verts[2 * vd], verts[2 * vd + 1]);
-            up.forEach(function (vu : number) {
+            up.forEach(function (vu: number) {
                 if (vd != vu) {
                     var upLen = hypot(verts[2 * vu], verts[2 * vu + 1]);
                     if (Math.abs(downLen - upLen) < Domain.kEpsilon) {
@@ -198,11 +196,11 @@ class Domain {
         this.centre = centre;
     };
 
-    public static joinSlidingDomains(rotor: Domain, stator : Domain, rotation: number) : number {
+    public static joinSlidingDomains(rotor: Domain, stator: Domain, rotation: number): number {
 
         var ndof = 0;
 
-        function mapLocalToGlobal(domain : Domain) : number[] {
+        function mapLocalToGlobal(domain: Domain): number[] {
             var nverts = domain.mesh.vertices.length / 2;
             var l2g = numeric.rep([domain.ndof], -1);
             for (var vi = 0; vi < nverts; ++vi) {
@@ -214,7 +212,7 @@ class Domain {
             return l2g;
         }
 
-        function applyMapping(data : number[], mapping : number[]) : void {
+        function applyMapping(data: number[], mapping: number[]): void {
             for (var vi = 0; vi < data.length; ++vi) {
                 data[vi] = mapping[data[vi]];
             }
@@ -224,7 +222,7 @@ class Domain {
         var rl2g = mapLocalToGlobal(rotor);
 
         var rverts = rotor.mesh.vertices, sverts = stator.mesh.vertices;
-        rotor.sliding.forEach(function(vr) {
+        rotor.sliding.forEach(function (vr) {
             var dr = rotor.v2dof[vr];
             if (rl2g[dr] == -1) {
                 rl2g[dr] = ndof;
@@ -260,19 +258,19 @@ class Domain {
 
     static kEpsilon = 10e-6;
 
-    mesh : Mesh;
-    ndof : number;
-    v2dof : number[];
-    coeff : number[];
-    up : collections.Set<number>;
-    down : collections.Set<number>;
-    sliding : collections.Set<number>;
-    outside : collections.Set<number>;
-    phases : collections.Set<number>;
-    centre : number;
-    rct : ReverseConnectivityTable;
+    mesh: Mesh;
+    ndof: number;
+    v2dof: number[];
+    coeff: number[];
+    up: collections.Set<number>;
+    down: collections.Set<number>;
+    sliding: collections.Set<number>;
+    outside: collections.Set<number>;
+    phases: collections.Set<number>;
+    centre: number;
+    rct: ReverseConnectivityTable;
     area: number[];
     areaPerDomainType: number[];
     q: number[][][];
 };
-export {BoundaryType, DomainType, Domain};
+export { BoundaryType, DomainType, Domain };
