@@ -33,6 +33,11 @@ import DomainType = dmn.DomainType;
 
 import * as numeric from 'numeric';
 
+interface ProgressFunc {
+    (progress: number): void;
+}
+
+
 class Solver {
 
     public constructor(rotor: Mesh, stator: Mesh) {
@@ -40,7 +45,7 @@ class Solver {
         this.stator = stator;
     };
 
-    public solve(rpm: number): Array<[number[], number[]]> {
+    public solve(rpm: number, progress: ProgressFunc): Array<[number[], number[]]> {
 
         function remapSolution(solution: number[], domain: Domain): number[] {
             var nverts = domain.mesh.vertices.length / 2;
@@ -69,6 +74,8 @@ class Solver {
             var sol = numeric.ccsLUPSolve(LUP, b);
 
             lastsol = [remapSolution(sol, rotor), remapSolution(sol, stator)];
+
+            progress(100. * (33.0 + i) / 64);
 
             sols.push(lastsol);
         }

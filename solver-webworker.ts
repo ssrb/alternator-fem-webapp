@@ -34,7 +34,9 @@ onmessage = function (e) {
 	var solver = new Solver(e.data[0], e.data[1]);
 
 	var rpm = 3000;
-	var sols = solver.solve(rpm);
+	var sols = solver.solve(rpm, (progress: number) => {
+		(<any>this).postMessage({ type: 'progress', progress })
+	});
 
 	var magnitude = 0;
 	for (var soli = 0; soli < sols.length; ++soli) {
@@ -44,6 +46,6 @@ onmessage = function (e) {
 
 	console.log('Done. Posting result.');
 
-	(<any>this).postMessage([sols, magnitude]);
+	(<any>this).postMessage({ type: 'result', sols, magnitude });
 }
 

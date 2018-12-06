@@ -63,9 +63,19 @@ window.onload = () => {
 
             var myWorker = new Worker("solver-webworker.js");
             myWorker.onmessage = function (e) {
-                sols = e.data[0];
-                magnitude = e.data[1];
-                myWorker.terminate();
+
+                var msg = e.data;
+
+                switch (msg.type) {
+                    case 'progress':
+                        console.log('Progress: ' + msg.progress);
+                        break;
+                    case 'result':
+                        sols = msg.sols;
+                        magnitude = msg.magnitude;
+                        myWorker.terminate();
+                        break;
+                }
             }
             myWorker.postMessage([rotor, stator]);
 
