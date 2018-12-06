@@ -28,7 +28,7 @@ class Progress {
 
 	public constructor(ctx: CanvasRenderingContext2D) {
 		this.ctx = ctx;
-		this.visible = false;
+		this.visible = true;
 		this.progress = 0;
 		this.completeTick = -1;
 	}
@@ -44,6 +44,24 @@ class Progress {
 		}
 
 		this.ctx.save();
+
+		this.ctx.globalAlpha = 1;
+
+		var fadeoutStart = 500;
+		var fadeoutDuration = 1000;
+
+		if (this.progress >= 1) {
+			if (this.completeTick == -1) {
+				this.completeTick = tick;
+			} else if (tick - this.completeTick < fadeoutStart) {
+			} else if (tick - this.completeTick < fadeoutStart + fadeoutDuration) {
+				this.ctx.globalAlpha = 1 - (tick - this.completeTick - fadeoutStart) / fadeoutDuration;
+			} else {
+				this.visible = false;
+				this.ctx.restore();
+				return;
+			}
+		}
 
 		var progressX = this.ctx.canvas.width / 2;
 		var progressY = this.ctx.canvas.height / 2;
@@ -92,7 +110,7 @@ class Progress {
 
 	ctx: CanvasRenderingContext2D
 	visible: boolean;
-	completeTick: number;
 	progress: number;
+	completeTick: number;
 };
 export = Progress;

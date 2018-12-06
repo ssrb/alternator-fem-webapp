@@ -54,7 +54,6 @@ window.onload = () => {
 
     var ctx2d = overlay.getContext("2d");
     var progress = new Progress(ctx2d);
-    progress.visible = true;
 
     var statorreq = new XMLHttpRequest();
     statorreq.open('GET', 'msh/stator012.msh');
@@ -82,7 +81,7 @@ window.onload = () => {
                     case 'result':
                         sols = msg.sols;
                         magnitude = msg.magnitude;
-                        progress.visible = false;
+                        progress.update(1);
                         myWorker.terminate();
                         break;
                 }
