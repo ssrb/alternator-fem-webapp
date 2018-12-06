@@ -27,16 +27,21 @@
 
 import Mesh = require('./mesh');
 import MeshArtist = require('./mesh-artist');
+import Progress = require('./progress');
 
 var glmat = require('gl-matrix');
 
 debugger;
 
 window.onload = () => {
-    var canvas = <HTMLCanvasElement>document.createElement("canvas");
+
+    var canvas = <HTMLCanvasElement>document.getElementById("canvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    document.body.appendChild(canvas);
+
+    var overlay = <HTMLCanvasElement>document.getElementById("overlay");
+    overlay.width = window.innerWidth;
+    overlay.height = window.innerHeight;
 
     var gl = <WebGLRenderingContext>canvas.getContext("webgl", {});
     gl.enable(gl.DEPTH_TEST);
@@ -46,6 +51,10 @@ window.onload = () => {
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.clearColor(0, 0, 0, 1);
+
+    var ctx2d = overlay.getContext("2d");
+    var progress = new Progress(ctx2d);
+    progress.visible = true;
 
     var statorreq = new XMLHttpRequest();
     statorreq.open('GET', 'msh/stator012.msh');
@@ -68,11 +77,12 @@ window.onload = () => {
 
                 switch (msg.type) {
                     case 'progress':
-                        console.log('Progress: ' + msg.progress);
+                        progress.update(msg.progress);
                         break;
                     case 'result':
                         sols = msg.sols;
                         magnitude = msg.magnitude;
+                        progress.visible = false;
                         myWorker.terminate();
                         break;
                 }
@@ -128,6 +138,9 @@ window.onload = () => {
                     glmat.mat4.rotateZ(mvMatrix, mvMatrix, theta);
                     rartist.draw(prMatrix, mvMatrix);
                 }
+
+                ctx2d.clearRect(0, 0, overlay.width, overlay.height);
+                progress.animate(timeNow);
 
                 gl.flush();
 

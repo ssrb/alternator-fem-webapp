@@ -75,7 +75,7 @@ class Solver {
 
             lastsol = [remapSolution(sol, rotor), remapSolution(sol, stator)];
 
-            progress(100. * (33.0 + i) / 64);
+            progress((33.0 + i) / 64);
 
             sols.push(lastsol);
         }
